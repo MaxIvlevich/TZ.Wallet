@@ -7,11 +7,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -46,8 +49,7 @@ public class GlobalExceptionHandler {
            String detailedError = e.getMostSpecificCause().getMessage();
 
          log.error("Failed to read HTTP message. Detailed error: {}, Request details: {}, Message: {}", detailedError, request, e.getMessage());
-
-         String userFriendlyMessage = "Invalid input. Please check your request format or parameters.";
+          String userFriendlyMessage = "Invalid input. Please check your request format or parameters.";
          return new ErrorResponse( System.currentTimeMillis(),userFriendlyMessage);
      }
 
@@ -60,20 +62,41 @@ public class GlobalExceptionHandler {
            };
        }
        @ResponseStatus(HttpStatus.NOT_FOUND)
+       @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+       public ErrorResponse handlerHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, WebRequest request){
+            log.error("HttpRequestMethodNotSupportedException: {},{}",e.getMessage(),request);
+            return new ErrorResponse(System.currentTimeMillis(),"Invalid request method");
+
+       }
+       @ResponseStatus(HttpStatus.NOT_FOUND)
        @ExceptionHandler(IllegalArgumentException.class)
        public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e , WebRequest request){
             log.error("Incorrect data is entered{}",request);
             return new ErrorResponse(System.currentTimeMillis(),"Incorrect data is entered");
 
        }
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(IncorrectDataException.class)
-    public ErrorResponse handleIncorrectDataException(IncorrectDataException e ,WebRequest request){
-        log.error(e.getMessage());
+       @ResponseStatus(HttpStatus.BAD_REQUEST)
+       @ExceptionHandler(IncorrectDataException.class)
+       public ErrorResponse handleIncorrectDataException(IncorrectDataException e ,WebRequest request){
+           log.error(e.getMessage(),request);
 
-        return new ErrorResponse(System.currentTimeMillis(),(e.getMessage()));
+           return new ErrorResponse(System.currentTimeMillis(),(e.getMessage()));
+
+       }
+       @ResponseStatus(HttpStatus.BAD_REQUEST)
+       @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+       public ErrorResponse handlerMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, WebRequest request){
+           log.error("HttpRequestMethodNotSupportedException: {},{}",e.getMessage(),request);
+           return new ErrorResponse(System.currentTimeMillis(),"Invalid request parameter");
 
     }
+       @ResponseStatus(HttpStatus.BAD_REQUEST)
+       @ExceptionHandler(NoResourceFoundException.class)
+       public ErrorResponse handlerNoResourceFoundException(NoResourceFoundException e, WebRequest request){
+           log.error("HttpRequestMethodNotSupportedException: {},{}",e.getMessage(),request);
+           return new ErrorResponse(System.currentTimeMillis(),"Invalid request path resource");
+
+       }
 
 
 
