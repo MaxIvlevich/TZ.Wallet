@@ -19,6 +19,10 @@ public class Wallet {
     private UUID walletId;
     @Column(name = "amount")
     private BigDecimal amount;
+
+
+
+
 }
 
 

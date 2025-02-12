@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,11 +49,10 @@ class WalletControllerTest {
      }
 
     @Test
-    void walletBalanceGetValidTest() throws Exception {
+    void walletBalanceGetValidTest(){
         //given
         WalletDTO walletDTO = new WalletDTO(UUID.randomUUID(),new BigDecimal(1));
         //WalletDTO walletDTO1 = new WalletDTO(UUID.randomUUID(),new BigDecimal(1));
-
 
         //when
         when(this.walletService.findWalletById(walletDTO.getWalletId())).thenReturn(walletDTO);
@@ -93,7 +93,7 @@ class WalletControllerTest {
         assertEquals(walletDTO,responseEntity.getBody());
     }
     @Test
-    void allWallets_ReturnsValidResponse() throws Exception{
+    void allWallets_ReturnsValidResponse(){
         //given
         WalletResponse walletResponse = new WalletResponse();
 
