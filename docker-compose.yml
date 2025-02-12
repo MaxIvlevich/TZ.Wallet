@@ -4,14 +4,16 @@ volumes:
 
 services:
 
-  db:
+  postgres:
     image: postgres
     restart: always
-    container_name: db
+    container_name: postgres
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1123
+    volumes:
+      -   wallet:/var/lib/postgresql/data
     ports:
       - "5431:5432"
   app:
@@ -20,9 +22,9 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - db
+      - postgres
     environment:
-      SPRING_DATASOURCE_URL: 'jdbc:postgresql://db:5432/postgres'
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres:5432/postgres'
       JAVA_OPTS: '-Xmx512m'
 
 
