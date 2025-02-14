@@ -26,8 +26,6 @@ import static maxiv.tz.models.enums.OperationType.WITHDRAW;
 @RequiredArgsConstructor
 public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
-    //private final WalletMapper walletMapper;
-
 
     @Override
     @Transactional
