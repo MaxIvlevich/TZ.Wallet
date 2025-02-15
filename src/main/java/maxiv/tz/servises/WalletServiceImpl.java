@@ -85,7 +85,7 @@ public class WalletServiceImpl implements WalletService {
 
 
     public Wallet findWallet(UUID uuid){
-        return walletRepository.findById(uuid)
+        return walletRepository.findByWalletId(uuid)
                 .orElseThrow(()-> new IllegalArgumentException("Wallet not found"));
 
     }
